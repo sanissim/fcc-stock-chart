@@ -16,14 +16,14 @@ $(function() {
         
     for (var i=0; i<data.length; i++){
 
-      $('#stocks').prepend("<div class='stock'><h5>" + stockData[i]["name"] + "</h5><div class='closebtn' id='" + stockData[i]["name"] + "'>x</div></div>");
+      $('#stocks').prepend("<div class='stock'><h5>" + stockData[i]["name"] + "</h5><div class='closebtn' id='" + stockData[i]["name"] + "'><p>x</p></div></div>");
 
     }
     
   });
   
   socket.on('new stock', function(msg){
-    $("<div class='stock'><h5>" + msg + "</h5><div class='closebtn' id='" + msg + "'>x</div></div>").hide().prependTo('#stocks').slideDown();
+    $("<div class='stock'><h5>" + msg + "</h5><div class='closebtn' id='" + msg + "'><p>x</p></div></div>").hide().prependTo('#stocks').slideDown();
     $.get('/quote', function(data){
       drawChart(data);
       });
