@@ -30,7 +30,7 @@ main {
 
 #stocks {
   flex-grow: 100;
-  overflow: scroll;
+  overflow: auto;
 }
 
 #sub-box {
@@ -91,4 +91,15 @@ h5 {
 
 #entry {
   font-size: 18px;
+}
+
+.modal {
+  display: none;
+  width: 100%;
+  height: 400px;
+  background: rgba( 255, 255, 255, .8) 
+              url('http://sampsonresume.com/labs/pIkfp.gif') 
+              50% 50% 
+              no-repeat;
+  
 }

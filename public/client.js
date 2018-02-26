@@ -8,32 +8,65 @@ $(function() {
 
   var socket = io();  
   
+  $(".modal").show();
+  
   $.get('/quote', function(data){
+    
+    $(".modal").hide();
     
     var stockData = JSON.parse(data);
 
     drawChart(data);
-        
-    for (var i=0; i<data.length; i++){
-
-      $('#stocks').prepend("<div class='stock'><h5>" + stockData[i]["name"] + "</h5><div class='closebtn' id='" + stockData[i]["name"] + "'><p>x</p></div></div>");
-
+    
+    if (stockData[0] !== 0){
+      for (var i=0; i<data.length; i++){
+        $('#stocks').prepend("<div class='stock'><h5>" + stockData[i]["name"] + "</h5><div class='closebtn' id='" + stockData[i]["name"] + "'><p>x</p></div></div>");
+      }
+    }
+    
+    else {    
+      $("<p id='error'>No tickers to display.</p>").hide().prependTo('#err-box').slideDown();    
     }
     
   });
   
   socket.on('new stock', function(msg){
-    $("<div class='stock'><h5>" + msg + "</h5><div class='closebtn' id='" + msg + "'><p>x</p></div></div>").hide().prependTo('#stocks').slideDown();
+    $("#chart").empty();
+    $("#chart").html('<div class="modal"></div>')
+    $(".modal").show();
+
     $.get('/quote', function(data){
+      $('#error').remove(); 
+      $("<div class='stock'><h5>" + msg + "</h5><div class='closebtn' id='" + msg + "'><p>x</p></div></div>").hide().prependTo('#stocks').slideDown();
+      $(".modal").hide();
       drawChart(data);
       });
     });
   
   socket.on('delete stock', function(msg){
-    $("#" + msg).parent().remove();
-    $.get('/quote', function(data){
-      drawChart(data);
-    });
+    
+    $("#chart").empty();
+    $("#chart").html('<div class="modal"></div>')
+    $(".modal").show();
+    
+    var children = $("#stocks").children().length;
+    
+    if (children > 1){
+      $.get('/quote', function(data){
+        $('#error').remove(); 
+        $("#" + msg).parent().remove();
+        $(".modal").hide();
+        drawChart(data);
+      });
+    }
+    
+    else {
+      $("#" + msg).parent().remove();
+      $(".modal").hide();
+      $("<p id='error'>No tickers to display.</p>").hide().prependTo('#err-box').slideDown();
+      drawChart(JSON.stringify([0,0]));
+    }
+    
   });
   
   socket.on('bad ticker', function(msg){
@@ -65,7 +98,7 @@ $(function() {
   })
   
   function drawChart(data){
-    
+        
       Highcharts.stockChart('chart', {
             
             credits: {

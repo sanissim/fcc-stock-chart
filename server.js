@@ -100,6 +100,10 @@ app.get("/quote", function (request, response) { //move this to client
   var yearAgo = new Date(dateObj.getTime() - 31536000000);
   var closer = [];
 
+  if (stocks.length < 1){
+    response.end(JSON.stringify([0,0]))
+  };
+  
   for (var z=0; z<stocks.length; z++){
     stockData.push({name:stocks[z], data: []})
   }
